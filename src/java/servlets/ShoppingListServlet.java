@@ -36,15 +36,21 @@ public class ShoppingListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        ArrayList<String> itemsList = (ArrayList<String>) session.getAttribute("itemsList");
+        ArrayList<String> itemsList;
         String user = request.getParameter("user");
         String action = request.getParameter("action");
-        String itemInput = request.getParameter("items");
-        String deleteItem = request.getParameter("items");
+        String itemInput = request.getParameter("item");
+        String deleteItem = request.getParameter("item");
+
+        if (session.getAttribute("itemsList") == null) {
+            itemsList = new ArrayList<>();
+        } else {
+            itemsList = (ArrayList<String>) session.getAttribute("itemsList");
+        }
 
         // registering user
         if (action != null && action.equals("register")) {
-            if (user != null || !user.equals("")) {
+            if (user != null && !user.isEmpty()) {
                 // setting the user attribute
                 session.setAttribute("user", user);
                 getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
@@ -54,13 +60,13 @@ public class ShoppingListServlet extends HttpServlet {
                 getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
             }
 
-        }
-
-        // adding items to the list
-        if (action != null && action.equals("add")) {
+        } // adding items to the list
+        else if (action != null && action.equals("add")) {
             // displays the delete button
             request.setAttribute("deleteButton", true);
-            if (itemInput != null) {
+            if (itemInput != null && !itemInput.isEmpty()) {
+                // displays the delete button
+                request.setAttribute("deleteButton", true);
                 // adding the item to the arraylist
                 itemsList.add(itemInput);
                 // connecting the list to the array
@@ -70,10 +76,10 @@ public class ShoppingListServlet extends HttpServlet {
                 request.setAttribute("itemNull", true);
                 getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
             }
-        }
-
-        // deleting an item
-        if (action != null && action.equals("delete")) {
+        } // deleting an item
+        else if (action != null && action.equals("delete")) {
+            // displays the delete button
+            request.setAttribute("deleteButton", true);
             itemsList.remove(deleteItem);
             getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
         }
