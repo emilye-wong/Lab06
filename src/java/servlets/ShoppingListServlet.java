@@ -36,8 +36,11 @@ public class ShoppingListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
+        ArrayList<String> itemsList = (ArrayList<String>) session.getAttribute("itemsList");
         String user = request.getParameter("user");
         String action = request.getParameter("action");
+        String itemInput = request.getParameter("items");
+        String deleteItem = request.getParameter("items");
 
         // registering user
         if (action != null && action.equals("register")) {
@@ -45,21 +48,19 @@ public class ShoppingListServlet extends HttpServlet {
                 // setting the user attribute
                 session.setAttribute("user", user);
                 getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+            } else {
+                request.setAttribute("userNull", true);
+                // if there is not value in the input
+                getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
             }
-        } else {
-            request.setAttribute("userNull", true);
-            // if there is not value in the input
-            getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
+
         }
 
         // adding items to the list
-        ArrayList<String> itemsList = (ArrayList<String>) session.getAttribute("itemsList");
-        String itemInput = request.getParameter("item");
-
         if (action != null && action.equals("add")) {
             // displays the delete button
             request.setAttribute("deleteButton", true);
-            if (itemInput != null || !itemInput.equals("")) {
+            if (itemInput != null) {
                 // adding the item to the arraylist
                 itemsList.add(itemInput);
                 // connecting the list to the array
@@ -72,12 +73,9 @@ public class ShoppingListServlet extends HttpServlet {
         }
 
         // deleting an item
-        String deleteItem = request.getParameter("item");
-
         if (action != null && action.equals("delete")) {
             itemsList.remove(deleteItem);
-             getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
-            //response.sendRedirect("ShoppingList");
+            getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
         }
     }
 }

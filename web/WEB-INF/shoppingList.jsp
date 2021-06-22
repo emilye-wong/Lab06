@@ -26,14 +26,14 @@
 
         <form method="post" action="">
             <c:forEach var="item" items="${itemsList}">
-                <tr><td>
+                <ul><li>
                         <input type="radio" name="items" value="${itemsName}">${itemsName}
-                    </td></tr>
+                    </ul></li>
                 </c:forEach>
 
             <c:if test="${deleteButton}">
-                <input type="submit" value="Delete">
                 <input type="hidden" name="action" value="delete">
+                <input type="submit" value="Delete">
             </c:if>
         </form>
     </body>
